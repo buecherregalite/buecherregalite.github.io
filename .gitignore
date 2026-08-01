@@ -1,0 +1,8 @@
+# Full-quality source material and the frozen JSON export — kept locally for
+# rebuilding, never published. See aus_guter_familie/README.md.
+aus_guter_familie/media-master/
+aus_guter_familie/research/
+
+# OS cruft
+.DS_Store
+Thumbs.db
