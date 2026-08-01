@@ -66,6 +66,20 @@ DROP_FEEDBACK = {
     "Add helpful feedback here and let learners try again.",
 }
 
+# Lesson 1, "Reflexion": a Reich-Ranicki quote left with an unresolved
+# citation note ("bessere Quelle" = better source needed) - an editorial TODO
+# never finished before the course went live. Dropped per author request.
+DROP_TEXT = {
+    "&bdquo;Ein Kanon ist nicht etwa ein Gesetzbuch&ldquo;, f&uuml;hrt Marcel "
+    "Reich-Ranicki aus, &bdquo;sondern eine Liste empfehlenswerter, wichtiger, "
+    "exemplarischer und, wenn es um die Schule geht, f&uuml;r den Unterricht "
+    "besonders geeigneter Werke.&ldquo; Die Auswahl helfe den Leserinnen und "
+    "Lesern, die angesichts der F&uuml;lle der verf&uuml;gbaren Literatur die "
+    "Orientierung zu verlieren drohen. &bdquo;Ohne Kanon gibt es nur "
+    "Willk&uuml;r, Beliebigkeit und Chaos und, nat&uuml;rlich, "
+    "Ratlosigkeit.&ldquo; bessere Quelle",
+}
+
 cleanup_log = []
 
 
@@ -355,8 +369,12 @@ def r_text(b):
     for it in b["items"]:
         if it.get("heading"):
             out.append(f'<div class="h">{rich(it["heading"])}</div>')
-        if it.get("paragraph"):
-            out.append(f'<div class="p">{rich(it["paragraph"])}</div>')
+        para = it.get("paragraph")
+        if para and strip_tags(para) in DROP_TEXT:
+            cleanup_log.append(("dropped paragraph", strip_tags(para)[:60] + "…"))
+            para = None
+        if para:
+            out.append(f'<div class="p">{rich(para)}</div>')
     return wrap(b, "".join(out))
 
 
@@ -778,6 +796,15 @@ def sidebar(course, built, current=None):
             f'<ol class="lessons" id="lessons">{"".join(rows)}</ol></nav>')
 
 
+def next_chapter_label(course, i):
+    """Label for the end-of-lesson link to lesson `i`: numbered chapters get
+    "Kapitel N: Title"; bonus lessons (no number in the title) keep their
+    title as-is."""
+    t = strip_tags(course["lessons"][i]["title"]).strip()
+    m = re.match(r"^(\d+)\.\s*(.+)$", t)
+    return f"Kapitel {m.group(1)}: {m.group(2)}" if m else t
+
+
 def build_lesson(course, idx, built):
     l = course["lessons"][idx]
     title = strip_tags(l["title"])
@@ -801,8 +828,8 @@ def build_lesson(course, idx, built):
         gate_html = ""
         if gate is not None:
             n_blocks += 1
-            label = esc(strip_tags((gate["items"][0] or {}).get("title")) or "Weiter")
             if gi + 1 < len(groups):
+                label = esc(strip_tags((gate["items"][0] or {}).get("title")) or "Weiter")
                 gate_html = (f'<div class="gate" data-gate="{gi}">'
                              f'<button class="btn gate-btn">{label}</button></div>')
             else:
@@ -811,6 +838,7 @@ def build_lesson(course, idx, built):
                 # At the end of the course there is nowhere to go but back to
                 # the contents - never drop the block silently.
                 if next_href:
+                    label = esc(next_chapter_label(course, order[pos + 1]))
                     gate_html = (f'<div class="gate"><a class="btn" '
                                  f'href="{next_href}">{label}</a></div>')
                 else:
@@ -825,22 +853,14 @@ def build_lesson(course, idx, built):
     assert n_blocks == len(l["items"]), \
         f"lesson {idx}: rendered {n_blocks} of {len(l['items'])} blocks"
 
-    prev_next = []
-    if pos > 0:
-        prev_next.append(f'<a class="btn ghost" href="{lesson_href(order[pos-1])}">‹ Zurück</a>')
-    if next_href:
-        prev_next.append(f'<a class="btn" href="{next_href}">Weiter ›</a>')
-
     body = f"""
 {sidebar(course, built, idx)}
 <main class="lesson">
   <header class="lesson-head">
     <div class="eyebrow">{esc(strip_tags(course["title"]))}</div>
     <h1>{esc(title)}</h1>
-    <button class="btn ghost expand-all">Alles aufklappen</button>
   </header>
   <div class="blocks">{''.join(parts)}</div>
-  <footer class="lesson-foot">{''.join(prev_next)}</footer>
 </main>
 <div class="lightbox" hidden><img alt=""><button class="lb-close" aria-label="Schliessen">×</button></div>
 """
