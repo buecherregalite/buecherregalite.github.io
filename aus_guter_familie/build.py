@@ -51,7 +51,6 @@ LESSONS = [1, 2]
 
 PLACEHOLDER_RESPONSES = {
     "End this scenario.": "Weiter",
-    "I want to do the scenario again.": "Szenario von vorne beginnen",
     "Learners who choose this response will continue on.": "Weiter",
 }
 
@@ -59,6 +58,12 @@ PLACEHOLDER_RESPONSES = {
 # are dropped entirely.
 DROP_RESPONSES = {
     "Learners who choose this incorrect response will be able to try again.",
+    # Paired with "End this scenario." at every branch of the Scheck
+    # monologue (lesson 2) and always jumps back to slide 0. It isn't a real
+    # dialogue choice, just a leftover "restart" option from the authoring
+    # tool; the archive doesn't offer a restart path through response
+    # bubbles, only the round Weiter button to continue.
+    "I want to do the scenario again.",
 }
 
 DROP_FEEDBACK = {
@@ -677,7 +682,8 @@ def r_scenario(b):
                 if label in DROP_RESPONSES:
                     cleanup_log.append(("dropped response", label))
                     continue
-                if label in PLACEHOLDER_RESPONSES:
+                is_nav = label in PLACEHOLDER_RESPONSES
+                if is_nav:
                     new = PLACEHOLDER_RESPONSES[label]
                     cleanup_log.append(("relabelled response", f"{label} -> {new}"))
                     desc = new
@@ -693,13 +699,28 @@ def r_scenario(b):
                     "goTo": r.get("goTo") or "next",
                     "target": ((r.get("nextSlide") or {}).get("slide")),
                     "feedback": rich(feedback) if feedback else None,
+                    "nav": is_nav,
                 })
+
+            slide_goto = s.get("goTo") or "next"
+            slide_target = (s.get("nextSlide") or {}).get("slide")
+            # A single leftover "continue" placeholder isn't a real dialogue
+            # choice - render it as the plain round Weiter button (which
+            # follows the slide's own goTo/target below) instead of a reply
+            # bubble. Only collapse it when the two agree, so a future lesson
+            # where they diverge fails loudly instead of silently mis-routing.
+            if len(responses) == 1 and responses[0]["nav"]:
+                r0 = responses[0]
+                assert r0["goTo"] == slide_goto and r0["target"] == slide_target, \
+                    f"nav response target diverges from slide fallback: {b['id']}/{s['id']}"
+                responses = []
+
             slides.append({
                 "id": s["id"],
                 "title": s.get("title") or "",
                 "html": rich(s.get("description")),
-                "goTo": s.get("goTo") or "next",
-                "target": ((s.get("nextSlide") or {}).get("slide")),
+                "goTo": slide_goto,
+                "target": slide_target,
                 "responses": responses,
             })
         scenes.append({"id": scene["id"], "title": scene.get("title") or "",

@@ -25,15 +25,16 @@ that file.
 | Original | Replaced with |
 |---|---|
 | `End this scenario.` | `Weiter` |
-| `I want to do the scenario again.` | `Szenario von vorne beginnen` |
+| `I want to do the scenario again.` | *(whole response removed)* |
 | `Learners who choose this response will continue on.` | `Weiter` |
 | `Add feedback here to let learners know they got it right.` | *(feedback removed)* |
 | `Add helpful feedback here and let learners try again.` | *(feedback removed)* |
 | `Learners who choose this incorrect response will be able to try again.` | *(whole response removed)* |
 
-The last one was dropped entirely rather than relabelled: both its button text
-and its feedback were boilerplate, so it carried no content. Its slide now has a
-single `Weiter` button.
+`I want to do the scenario again.` and the last row were dropped entirely
+rather than relabelled: both were boilerplate carrying no content (or, for the
+"scenario again" response, offered a restart loop rather than a real reply -
+see §5 below). Their slides now have a single `Weiter` step.
 
 The build prints every cleanup it applies on each run. If a placeholder appears
 in a lesson not yet built, it will be reported then.
@@ -63,7 +64,29 @@ current one. That shortcut is removed; advancing now only happens through the
 labelled link above, which appears once the lesson's content has actually
 been worked through.
 
-## 5. Scenario character illustrations dropped
+## 5. Scenario responses redesigned as a chat
+
+Scenarios now render as a conversation: the speaker's line (and any answer
+feedback) is a left-aligned "incoming" speech bubble, and response choices are
+right-aligned "outgoing" bubbles a reader taps to reply. A step with no real
+choice gets a small round `›` button instead of a bubble, since it isn't part
+of the dialogue - just a way to move on.
+
+That round button is also why `I want to do the scenario again.` (§2) is
+dropped rather than kept as a bubble. In the lesson 2 "Kanon" monologue, every
+checkpoint offered exactly two boilerplate responses: `End this scenario.`
+(which, despite the name, just moves to the next line - its `goTo` is `next`,
+not `end`) and `I want to do the scenario again.` (which jumps back to slide
+0). Neither is a real reply; they're the authoring tool's default "continue or
+restart" scaffolding, never customized for this monologue. Rendering them as
+chat bubbles would have implied a dialogue choice that isn't there. The restart
+option is removed, and the remaining `Weiter` collapses to the round button
+whenever it is the only response left on a slide - `build.py` asserts its
+target agrees with the slide's own fallback target before doing so, so a
+future lesson where they diverge fails the build instead of silently
+mis-routing.
+
+## 6. Scenario character illustrations dropped
 
 Scenario slides carry `hasCharacter: true` and an `emotion` field, but the
 artwork was served from the platform's own bundle and never existed in the
@@ -71,7 +94,7 @@ course data. It is omitted. Everything the character *says* is preserved. Per
 the course author, these illustrations were third-party assets not covered by
 the author's licence, so their removal is intended.
 
-## 6. Entrance animation dropped
+## 7. Entrance animation dropped
 
 Blocks faded in on scroll in the original. Removed deliberately: it is cosmetic,
 and implementing it means setting `opacity: 0` by default, which makes text
@@ -81,7 +104,7 @@ JS.
 
 ---
 
-## 7. Three behavioural corrections
+## 8. Three behavioural corrections
 
 These are places where reproducing the raw data literally would have produced a
 *worse* result than the original site. All three are judgement calls — flagged
@@ -89,7 +112,7 @@ here because they are the ones most likely to warrant a second opinion. Two of
 the three are the same underlying lesson: **the data is more reliable than the
 labels on it.**
 
-### 7.1 Matching questions: the `correct` flag is ignored
+### 8.1 Matching questions: the `correct` flag is ignored
 
 Each matching row has `title`, `matchTitle`, and a boolean `correct`. Reading
 `correct` literally makes rows unanswerable. Across the whole course:
@@ -115,7 +138,7 @@ newly added rows. The archive grades on `title ↔ matchTitle` for every row.
 **To revert:** re-add `data-correct` in `r_knowledgecheck()` in `build.py` and
 restore the flag check in `course.js`.
 
-### 7.2 Question type is decided by the answers, not the `variant` label
+### 8.2 Question type is decided by the answers, not the `variant` label
 
 Two blocks are typed `multiple choice` but have **five correct answers each**:
 
@@ -130,7 +153,7 @@ Caught by the interaction tests, not by eye: both rendered perfectly.
 **To revert:** restore `typ = "radio" if v == "multiple choice" else "checkbox"`
 in `r_knowledgecheck()`.
 
-### 7.3 `tryAgain` responses always return to the same slide
+### 8.3 `tryAgain` responses always return to the same slide
 
 Some scenario responses have `action: "tryAgain"` *and* a `nextSlide` pointer to
 a different slide (lesson 2, slide 7 points back to slide 0). Honouring the
@@ -139,7 +162,7 @@ action now wins over the pointer: show feedback, then re-ask the same slide.
 
 ---
 
-## 8. Video re-encoded for the web
+## 9. Video re-encoded for the web
 
 The published site carries 720p H.264 (CRF 23, AAC 128k, faststart) rather than
 the 1080p originals — 1346 MB of video becomes roughly a third of that, which is
@@ -153,9 +176,11 @@ Anything still over 90 MB is re-encoded down a ladder (720p CRF 27 → 540p → 
 `media-master/` alongside a `manifest.json` mapping every file to its source URL.
 That folder is the real archive and is not part of the published site.
 
-## 9. Additions not in the original
+## 10. Additions not in the original
 
 - **Checkbox state persists** to `localStorage` (namespaced `reuter:`).
+- **Scenario responses render as chat bubbles** (§5) — not present in the
+  original Rise player.
 - **Interactives render inline** rather than fullscreen.
 - **Print stylesheet** — expands all gated content, hides navigation.
 - **Keyboard access** on tabs, flashcards and scenario buttons.

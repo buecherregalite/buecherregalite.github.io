@@ -263,20 +263,25 @@
       advance(i, r.goTo, r.target);
     }
 
+    // Narration and feedback render as "incoming" speech bubbles, response
+    // choices as "outgoing" ones on the right - a chat with the scenario's
+    // speaker. A slide with no real choice (or one collapsed by the build,
+    // see DROP_RESPONSES/nav in build.py) just gets a round Weiter button:
+    // it isn't part of the conversation, so it shouldn't look like a reply.
     function render(i) {
       var s = slides[i];
       var html = "";
       if (s.title) html += '<h3 class="sc-title">' + s.title + "</h3>";
-      html += '<div class="sc-body">' + s.html + "</div>";
+      html += '<div class="sc-body sc-bubble sc-bubble-in">' + s.html + "</div>";
 
       if (s.responses.length) {
-        html += '<ul class="sc-responses">';
+        html += '<div class="sc-responses">';
         s.responses.forEach(function (r, ri) {
-          html += '<li><button data-r="' + ri + '">' + r.html + "</button></li>";
+          html += '<button class="sc-bubble sc-bubble-out" data-r="' + ri + '">' + r.html + "</button>";
         });
-        html += "</ul>";
+        html += "</div>";
       } else {
-        html += '<div class="sc-nav"><button class="btn go-next">Weiter</button></div>';
+        html += '<div class="sc-nav"><button class="btn-round go-next" aria-label="Weiter">›</button></div>';
       }
       stage.innerHTML = html;
 
@@ -291,13 +296,14 @@
           if (r.feedback) {
             list.remove();
             var fb = document.createElement("div");
-            fb.className = "sc-feedback";
+            fb.className = "sc-feedback sc-bubble sc-bubble-in";
             fb.innerHTML = r.feedback;
             stage.appendChild(fb);
             var nav = document.createElement("div");
             nav.className = "sc-nav";
-            nav.innerHTML = '<button class="btn cont">' +
-              (r.action === "tryAgain" ? "Nochmal versuchen" : "Weiter") + "</button>";
+            nav.innerHTML = r.action === "tryAgain"
+              ? '<button class="btn ghost cont">Nochmal versuchen</button>'
+              : '<button class="btn-round cont" aria-label="Weiter">›</button>';
             stage.appendChild(nav);
             $(".cont", nav).addEventListener("click", function () { follow(i, r); });
           } else {

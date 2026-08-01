@@ -426,26 +426,63 @@ img[data-zoom] { cursor: zoom-in; }
 }
 .scenario-stage { padding: 36px 32px 32px; }
 .sc-title { font-size: 25px; line-height: 1.3; font-weight: 600; margin: 0 0 14px; }
-.sc-body { font-size: 19px; }
-.sc-body p { margin: 0 0 1em; }
-.sc-body p:last-child { margin-bottom: 0; }
-.sc-responses { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 10px; }
-.sc-responses button {
-  width: 100%; text-align: left;
-  font-family: var(--serif); font-size: 17.5px; line-height: 1.45;
-  padding: 15px 20px; border: 1.5px solid var(--line);
-  border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer;
-  transition: border-color .15s, background .15s;
+
+/* Speech bubbles: narration/feedback "in" on the left, response choices
+   "out" on the right, like a chat with the scenario's speaker.
+   width: fit-content keeps the div-based bubbles (body/feedback) hugging
+   their text instead of stretching full width; the button-based response
+   bubbles already shrink-wrap as flex items (see .sc-responses below). */
+.sc-bubble {
+  display: block;
+  width: fit-content;
+  max-width: 82%;
+  padding: 14px 20px;
+  border-radius: 18px;
+  font-size: 17.5px;
+  line-height: 1.5;
+  text-align: left;
 }
-.sc-responses button:hover { border-color: var(--accent); background: #fff; }
-.sc-responses button p { margin: 0; }
-.sc-feedback {
-  margin-top: 20px; padding: 18px 22px; background: #fff;
-  border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: 17.5px;
+.sc-bubble p { margin: 0 0 .6em; }
+.sc-bubble p:last-child { margin-bottom: 0; }
+
+.sc-bubble-in {
+  margin-right: auto;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+  color: var(--ink);
 }
-.sc-feedback p { margin: 0 0 .6em; }
-.sc-feedback p:last-child { margin-bottom: 0; }
+.sc-feedback.sc-bubble-in { margin-top: 14px; }
+
+.sc-responses {
+  margin: 22px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.sc-bubble-out {
+  border-bottom-right-radius: 4px;
+  font-family: var(--serif);
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background .15s;
+}
+.sc-bubble-out:hover { background: var(--accent-dark); }
+
 .sc-nav { margin-top: 22px; display: flex; gap: 12px; }
+.btn-round {
+  width: 46px; height: 46px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 21px; line-height: 1;
+  border-radius: 50%; border: none;
+  background: var(--accent); color: #fff; cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.btn-round:hover { background: var(--accent-dark); }
+.btn-round:active { transform: translateY(1px); }
 .sc-end { font-family: var(--sans); font-size: 15px; color: var(--ink-soft); margin-top: 22px; }
 
 /* ---------------- other interactives ---------------- */
