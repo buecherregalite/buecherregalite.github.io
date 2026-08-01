@@ -38,7 +38,32 @@ single `Weiter` button.
 The build prints every cleanup it applies on each run. If a placeholder appears
 in a lesson not yet built, it will be reported then.
 
-## 3. Scenario character illustrations dropped
+## 3. Unsourced quote removed
+
+Lesson 1, "Reflexion" block: a Marcel Reich-Ranicki quote on what a canon is
+ended with the plain-text words "bessere Quelle" ("better source") — the
+author's own note-to-self to find a proper citation, never resolved before
+the course went live. The quote is dropped entirely; the "Reflexion" heading
+above it stays. Applied automatically by `build.py` (`DROP_TEXT`), logged on
+every build like the placeholder substitutions above.
+
+## 4. Chapter-end link labels standardized
+
+Every lesson ends with a link to the next one. In the source data its label
+was whatever the author happened to type for that link, e.g. "Noch nicht
+genug?", "Zur Abschlussarbeit", "Mich interessiert auch der Vergleich mit
+Effi Briest...", "Hier geht's zum ersten Kapitel...". These are replaced with
+one uniform label, "Kapitel N: <Titel>", built from the next lesson's own
+title. Bonus lessons (Zusatzaufgabe/Zusatzinformation), whose titles carry no
+chapter number, keep their title unchanged rather than being force-numbered.
+
+The lesson footer also used to repeat this as a "Weiter" shortcut on every
+page, letting a reader jump to the next chapter without working through the
+current one. That shortcut is removed; advancing now only happens through the
+labelled link above, which appears once the lesson's content has actually
+been worked through.
+
+## 5. Scenario character illustrations dropped
 
 Scenario slides carry `hasCharacter: true` and an `emotion` field, but the
 artwork was served from the platform's own bundle and never existed in the
@@ -46,7 +71,7 @@ course data. It is omitted. Everything the character *says* is preserved. Per
 the course author, these illustrations were third-party assets not covered by
 the author's licence, so their removal is intended.
 
-## 4. Entrance animation dropped
+## 6. Entrance animation dropped
 
 Blocks faded in on scroll in the original. Removed deliberately: it is cosmetic,
 and implementing it means setting `opacity: 0` by default, which makes text
@@ -56,7 +81,7 @@ JS.
 
 ---
 
-## 5. Three behavioural corrections
+## 7. Three behavioural corrections
 
 These are places where reproducing the raw data literally would have produced a
 *worse* result than the original site. All three are judgement calls — flagged
@@ -64,7 +89,7 @@ here because they are the ones most likely to warrant a second opinion. Two of
 the three are the same underlying lesson: **the data is more reliable than the
 labels on it.**
 
-### 5.1 Matching questions: the `correct` flag is ignored
+### 7.1 Matching questions: the `correct` flag is ignored
 
 Each matching row has `title`, `matchTitle`, and a boolean `correct`. Reading
 `correct` literally makes rows unanswerable. Across the whole course:
@@ -90,7 +115,7 @@ newly added rows. The archive grades on `title ↔ matchTitle` for every row.
 **To revert:** re-add `data-correct` in `r_knowledgecheck()` in `build.py` and
 restore the flag check in `course.js`.
 
-### 5.2 Question type is decided by the answers, not the `variant` label
+### 7.2 Question type is decided by the answers, not the `variant` label
 
 Two blocks are typed `multiple choice` but have **five correct answers each**:
 
@@ -105,7 +130,7 @@ Caught by the interaction tests, not by eye: both rendered perfectly.
 **To revert:** restore `typ = "radio" if v == "multiple choice" else "checkbox"`
 in `r_knowledgecheck()`.
 
-### 5.3 `tryAgain` responses always return to the same slide
+### 7.3 `tryAgain` responses always return to the same slide
 
 Some scenario responses have `action: "tryAgain"` *and* a `nextSlide` pointer to
 a different slide (lesson 2, slide 7 points back to slide 0). Honouring the
@@ -114,7 +139,7 @@ action now wins over the pointer: show feedback, then re-ask the same slide.
 
 ---
 
-## 6. Video re-encoded for the web
+## 8. Video re-encoded for the web
 
 The published site carries 720p H.264 (CRF 23, AAC 128k, faststart) rather than
 the 1080p originals — 1346 MB of video becomes roughly a third of that, which is
@@ -128,11 +153,8 @@ Anything still over 90 MB is re-encoded down a ladder (720p CRF 27 → 540p → 
 `media-master/` alongside a `manifest.json` mapping every file to its source URL.
 That folder is the real archive and is not part of the published site.
 
-## 7. Additions not in the original
+## 9. Additions not in the original
 
-- **"Alles aufklappen"** on every lesson — reveals all `Weiter`-gated sections at
-  once, making the page searchable with Ctrl-F and printable. The single most
-  useful deviation for archival use.
 - **Checkbox state persists** to `localStorage` (namespaced `reuter:`).
 - **Interactives render inline** rather than fullscreen.
 - **Print stylesheet** — expands all gated content, hides navigation.
