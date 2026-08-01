@@ -89,6 +89,7 @@ a:hover { color: var(--accent); }
   margin-bottom: 14px;
 }
 .brand:hover { color: var(--accent-dark); }
+.nav-toggle { display: none; }
 .lessons { list-style: none; margin: 0; padding: 0; counter-reset: none; }
 .lessons li a,
 .lessons li.todo > span {
@@ -590,16 +591,51 @@ a.card-l:hover { border-color: var(--accent); background: var(--tint); transform
   .sidebar {
     position: static; width: auto; height: auto;
     border-right: 0; border-bottom: 1px solid var(--line);
-    padding: 22px 0;
+    padding: 0;
   }
   .lesson { margin-left: 0; }
-  .lessons { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 16px; }
-  .lessons li a, .lessons li.todo > span {
-    padding: 7px 13px; border-left: 0; border-radius: 999px;
-    background: #fff; border: 1px solid var(--line); font-size: 13.5px;
+
+  .nav-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; padding: 16px 20px;
   }
-  .lessons li.on a { border-color: var(--accent); }
-  .brand { padding: 0 20px 18px; }
+  .brand { padding: 0; margin-bottom: 0; border-bottom: 0; font-size: 17px; }
+
+  .nav-toggle {
+    display: flex; align-items: center; gap: 10px; flex: none;
+    font-family: var(--sans); font-size: 13.5px; font-weight: 600;
+    color: var(--ink-soft); background: #fff; border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 16px 9px 14px; cursor: pointer;
+  }
+  .nav-toggle:hover { border-color: var(--accent); color: var(--ink); }
+  .nav-toggle[aria-expanded="true"] { color: var(--ink); border-color: var(--accent); }
+
+  .nav-toggle-icon {
+    position: relative; width: 16px; height: 2px;
+    background: currentColor; border-radius: 1px; flex: none;
+  }
+  .nav-toggle-icon::before, .nav-toggle-icon::after {
+    content: ""; position: absolute; left: 0; width: 16px; height: 2px;
+    background: currentColor; border-radius: 1px;
+    transition: transform .18s ease;
+  }
+  .nav-toggle-icon::before { top: -5px; }
+  .nav-toggle-icon::after { top: 5px; }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon { background: transparent; }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon::before { transform: translateY(5px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-icon::after { transform: translateY(-5px) rotate(-45deg); }
+
+  /* Collapsed by default; only .sidebar.open reveals the list, laid out
+     exactly like the desktop sidebar (vertical, not pills) so it still
+     looks tidy once opened. */
+  .lessons {
+    display: none;
+    border-top: 1px solid var(--line);
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+  .sidebar.open .lessons { display: block; }
+  .lessons li a, .lessons li.todo > span { padding: 11px 20px; }
 }
 
 @media (max-width: 700px) {

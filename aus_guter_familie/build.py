@@ -769,9 +769,13 @@ def sidebar(course, built, current=None):
             rows.append(f'<li class="{cls}"><a href="{href}">{esc(t)}</a></li>')
         else:
             rows.append(f'<li class="todo"><span>{esc(t)}</span></li>')
-    return (f'<nav class="sidebar"><a class="brand" href="{"../" if current is not None else ""}index.html">'
+    return (f'<nav class="sidebar"><div class="nav-head">'
+            f'<a class="brand" href="{"../" if current is not None else ""}index.html">'
             f'{esc(strip_tags(course["title"]))}</a>'
-            f'<ol class="lessons">{"".join(rows)}</ol></nav>')
+            f'<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="lessons">'
+            f'<span class="nav-toggle-icon" aria-hidden="true"></span>'
+            f'<span class="nav-toggle-text">Kapitel</span></button></div>'
+            f'<ol class="lessons" id="lessons">{"".join(rows)}</ol></nav>')
 
 
 def build_lesson(course, idx, built):

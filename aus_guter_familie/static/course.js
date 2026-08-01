@@ -28,6 +28,26 @@
     return g;
   }
 
+  /* ---------------- nav toggle (narrow / mobile) ---------------- */
+
+  (function () {
+    var toggle = $(".nav-toggle");
+    var sidebar = $(".sidebar");
+    if (!toggle || !sidebar) return;
+    toggle.addEventListener("click", function () {
+      var open = sidebar.classList.toggle("open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    // Collapse again once a chapter is picked, so the panel doesn't stay
+    // open over the lesson content after navigating.
+    $$(".lessons a", sidebar).forEach(function (a) {
+      a.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  })();
+
   /* ---------------- continue gates ---------------- */
 
   each(".gate", "gate", function (gate) {
