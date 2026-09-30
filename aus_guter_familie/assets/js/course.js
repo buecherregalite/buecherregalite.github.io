@@ -371,21 +371,42 @@
     var result = $(".kc-result", root);
     var pool = $(".sort-pool", root);
 
+    function place(pile, card) {
+      if (!pile || !card) return;
+      card.classList.remove("sel");
+      card.setAttribute("data-placed", pile.getAttribute("data-pile"));
+      $(".pile-drop", pile).appendChild(card);
+      sel = null;
+      $$(".drop-over", root).forEach(function (e) { e.classList.remove("drop-over"); });
+    }
+
     $$(".sort-card", root).forEach(function (c) {
       c.addEventListener("click", function () {
         if (sel) sel.classList.remove("sel");
         sel = sel === c ? null : c;
         if (sel) sel.classList.add("sel");
       });
+      c.addEventListener("dragstart", function (e) {
+        sel = c;
+        try { e.dataTransfer.setData("text/plain", c.getAttribute("data-id")); } catch (err) {}
+        e.dataTransfer.effectAllowed = "move";
+      });
+      c.addEventListener("dragend", function () {
+        $$(".drop-over", root).forEach(function (e) { e.classList.remove("drop-over"); });
+      });
     });
 
     $$(".pile", root).forEach(function (p) {
-      p.addEventListener("click", function () {
-        if (!sel) return;
-        sel.classList.remove("sel");
-        sel.setAttribute("data-placed", p.getAttribute("data-pile"));
-        $(".pile-drop", p).appendChild(sel);
-        sel = null;
+      p.addEventListener("click", function () { place(p, sel); });
+      p.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        p.classList.add("drop-over");
+      });
+      p.addEventListener("dragleave", function () { p.classList.remove("drop-over"); });
+      p.addEventListener("drop", function (e) {
+        e.preventDefault();
+        place(p, sel);
       });
     });
 

@@ -602,15 +602,15 @@ def r_interactive(b):
     if v == "sorting":
         piles = b.get("piles") or []
         cards = "".join(
-            f'<button class="sort-card" data-pile="{it["pileId"]}" '
+            f'<button class="sort-card" draggable="true" data-pile="{it["pileId"]}" '
             f'data-id="{it["id"]}">{esc(it["title"])}</button>'
             for it in b["items"])
         zones = "".join(
             f'<div class="pile" data-pile="{p["id"]}">'
             f'<h4>{esc(p["title"])}</h4><div class="pile-drop"></div></div>'
             for p in piles)
-        return wrap(b, f'<div class="sorting"><p class="hint">Karte auswählen, '
-                       f'dann Kategorie anklicken.</p>'
+        return wrap(b, f'<div class="sorting"><p class="hint">Ziehe den Begriff '
+                       f'in den entsprechenden Bereich.</p>'
                        f'<div class="sort-pool">{cards}</div>'
                        f'<div class="piles">{zones}</div>'
                        f'<div class="kc-actions"><button class="btn sort-check">Prüfen</button>'
