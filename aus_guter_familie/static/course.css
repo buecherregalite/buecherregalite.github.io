@@ -517,7 +517,7 @@ img[data-zoom] { cursor: zoom-in; }
 }
 .card[aria-pressed="true"] .card-inner { transform: rotateY(180deg); }
 .face {
-  position: absolute; inset: 0; backface-visibility: hidden;
+  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 10px; padding: 26px; background: #fff; text-align: center;
@@ -532,7 +532,9 @@ img[data-zoom] { cursor: zoom-in; }
 .face.front img { display: none; }
 .face.front.face-photo { background: none; }
 .face.front.face-photo img { display: block; }
-.face.back.face-blue { background: rgba(40, 95, 159, .12); }
+/* Opaque, not translucent: this sits over a face-photo front, and a
+   see-through tint let the book cover show through the back face. */
+.face.back.face-blue { background: #e3ecf6; }
 /* This screenshot's important content (logo, highlighted text) sits near
    its edges, so cropping with object-fit:cover cuts it off - show the
    whole image instead, with white padding round it. */
