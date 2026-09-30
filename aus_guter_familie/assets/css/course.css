@@ -534,27 +534,33 @@ img[data-zoom] { cursor: zoom-in; }
   position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px; padding: 26px; background: #fff; text-align: center;
+  gap: 10px; padding: 20px; background: #fff; text-align: center;
 }
 .face img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-.face-txt { position: relative; font-size: 20px; }
-.face.back { transform: rotateY(180deg); background: var(--tint); }
-/* The front face used a generic stock photo that didn't match any card's
-   title - a plain light-blue tint reads better than a mismatched image.
-   .face-photo opts a specific face back into showing its own real image. */
+.face-txt { position: relative; font-size: 15px; line-height: 1.4; }
+/* Both faces used the same generic stock photo, which never matched any
+   card's title or content - a plain light-blue tint reads far better than
+   a mismatched image. .face-photo/.face-contain opt a specific face into
+   showing its own real, relevant image instead. */
 .face.front { background: rgba(40, 95, 159, .12); }
 .face.front img { display: none; }
+.face.back { transform: rotateY(180deg); background: #e3ecf6; }
+.face.back img { display: none; }
 .face.front.face-photo { background: none; }
 .face.front.face-photo img { display: block; }
-/* Opaque, not translucent: this sits over a face-photo front, and a
-   see-through tint let the book cover show through the back face. */
-.face.back.face-blue { background: #e3ecf6; }
+.face.back.face-contain { background: none; }
 /* This screenshot's important content (logo, highlighted text) sits near
    its edges, so cropping with object-fit:cover cuts it off - show the
    whole image instead, with white padding round it. */
-.face-contain img { object-fit: contain; background: #fff; }
+.face.back.face-contain img { display: block; object-fit: contain; background: #fff; }
 
-.stack-nav { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
+/* Unlike .flash-grid (a CSS grid, which sizes each .card via its track),
+   the stack shows one bare button at a time with no layout context - its
+   absolutely-positioned .face content had nothing to size against, so the
+   text rendered off-position. Give the card an explicit width instead. */
+.flash-stack { display: flex; justify-content: center; }
+.flash-stack .card { display: block; width: 100%; max-width: 320px; }
+.stack-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 20px; }
 .stack-pos { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); }
 
 .sorting .sort-pool { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 24px; min-height: 44px; }
@@ -579,6 +585,8 @@ img[data-zoom] { cursor: zoom-in; }
 .process { border: 1px solid var(--line); border-radius: 10px; padding: 28px 30px; }
 .step-n { font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--accent); }
 .step h4 { margin: 8px 0 12px; font-size: 23px; }
+.step-fig { margin: 0 0 16px; }
+.step-fig img { width: 100%; border-radius: 6px; display: block; }
 
 .lg .lg-wrap { position: relative; display: inline-block; max-width: 100%; }
 .lg img { border-radius: 4px; }
