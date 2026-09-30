@@ -533,6 +533,10 @@ img[data-zoom] { cursor: zoom-in; }
 .face.front.face-photo { background: none; }
 .face.front.face-photo img { display: block; }
 .face.back.face-blue { background: rgba(40, 95, 159, .12); }
+/* This screenshot's important content (logo, highlighted text) sits near
+   its edges, so cropping with object-fit:cover cuts it off - show the
+   whole image instead, with white padding round it. */
+.face-contain img { object-fit: contain; background: #fff; }
 
 .stack-nav { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
 .stack-pos { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); }
