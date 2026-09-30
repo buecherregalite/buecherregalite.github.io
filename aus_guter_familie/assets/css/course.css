@@ -360,12 +360,20 @@ img[data-zoom] { cursor: zoom-in; }
 .kc-options li.wrong { border-color: #d2453c; background: #fdf3f2; }
 .kc-options li.missed { border-color: #1a9c55; border-style: dashed; }
 
-.match { margin-bottom: 22px; }
+/* Two columns: the pool of answers stays visible next to the rows instead
+   of sitting in a big wrapped block above them - easier to match sentence
+   starts (left) with endings (right) without scrolling back and forth. */
+.match {
+  margin-bottom: 22px;
+  display: grid; grid-template-columns: minmax(220px, 300px) 1fr;
+  gap: 10px 24px; align-items: start;
+}
+.match .hint { grid-column: 1 / -1; margin: 0 0 4px; }
 .match-pool {
-  display: flex; flex-wrap: wrap; gap: 9px;
+  display: flex; flex-direction: column; gap: 9px;
   min-height: 52px; padding: 11px;
   border: 1.5px dashed var(--line); border-radius: 9px;
-  background: var(--tint); margin-bottom: 22px;
+  background: var(--tint); margin-bottom: 0;
 }
 .chip {
   font-family: var(--sans); font-size: 15px; font-weight: 600;
@@ -373,6 +381,7 @@ img[data-zoom] { cursor: zoom-in; }
   border-radius: 999px; background: #fff; color: var(--ink);
   cursor: grab; user-select: none;
 }
+.match-pool .chip { width: 100%; text-align: left; border-radius: 10px; }
 .chip:hover { border-color: var(--accent); }
 .chip.sel { border-color: var(--accent); background: rgba(40, 95, 159, .12); }
 .chip:active { cursor: grabbing; }
@@ -704,6 +713,10 @@ a.card-l:hover { border-color: var(--accent); background: var(--tint); transform
   }
   .sidebar.open .lessons { display: block; }
   .lessons li a, .lessons li.todo > span { padding: 11px 20px; }
+}
+
+@media (max-width: 860px) {
+  .match { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 700px) {
