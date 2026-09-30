@@ -374,6 +374,7 @@ img[data-zoom] { cursor: zoom-in; }
   min-height: 52px; padding: 11px;
   border: 1.5px dashed var(--line); border-radius: 9px;
   background: var(--tint); margin-bottom: 0;
+  position: sticky; top: 20px;
 }
 .chip {
   font-family: var(--sans); font-size: 15px; font-weight: 600;
@@ -392,6 +393,10 @@ img[data-zoom] { cursor: zoom-in; }
   padding: 11px 12px; margin-bottom: 8px;
   border: 1px solid var(--line); border-radius: 8px;
 }
+/* When the row text is a sentence's ending, the blank being filled in is its
+   beginning - the slot has to read first, on the left, or the sentence
+   comes out backwards. */
+.match-rows.slot-first .match-row { grid-template-columns: 250px 1fr; }
 .match-left p { margin: 0; }
 .match-slot {
   display: flex; align-items: center; justify-content: center;
