@@ -506,7 +506,7 @@ img[data-zoom] { cursor: zoom-in; }
 
 .hint { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); margin: 0 0 16px; }
 
-.flash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 16px; }
+.flash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .card {
   border: 0; background: none; padding: 0; cursor: pointer;
   perspective: 1200px; aspect-ratio: 3 / 4; font: inherit;
@@ -520,11 +520,19 @@ img[data-zoom] { cursor: zoom-in; }
   position: absolute; inset: 0; backface-visibility: hidden;
   border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px; padding: 20px; background: #fff; text-align: center;
+  gap: 10px; padding: 26px; background: #fff; text-align: center;
 }
 .face img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-.face-txt { position: relative; font-size: 17px; }
+.face-txt { position: relative; font-size: 20px; }
 .face.back { transform: rotateY(180deg); background: var(--tint); }
+/* The front face used a generic stock photo that didn't match any card's
+   title - a plain light-blue tint reads better than a mismatched image.
+   .face-photo opts a specific face back into showing its own real image. */
+.face.front { background: rgba(40, 95, 159, .12); }
+.face.front img { display: none; }
+.face.front.face-photo { background: none; }
+.face.front.face-photo img { display: block; }
+.face.back.face-blue { background: rgba(40, 95, 159, .12); }
 
 .stack-nav { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
 .stack-pos { font-family: var(--sans); font-size: 14px; color: var(--ink-soft); }
