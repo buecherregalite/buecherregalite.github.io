@@ -437,8 +437,10 @@ img[data-zoom] { cursor: zoom-in; }
 .scenario-head {
   font-family: var(--sans); font-size: 12px; font-weight: 700;
   letter-spacing: .13em; text-transform: uppercase;
-  padding: 15px 32px; background: var(--ink); color: #fff;
+  padding: 15px 32px; background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
 }
+.sc-count { opacity: .8; }
 .scenario-stage { padding: 36px 32px 32px; }
 .sc-title { font-size: 25px; line-height: 1.3; font-weight: 600; margin: 0 0 14px; }
 

@@ -227,6 +227,15 @@
 
   each(".scenario", "scenario", function (root) {
     var data = JSON.parse($(".scenario-data", root).textContent);
+    var head = $(".scenario-head", root);
+    var headTitleEl = document.createElement("span");
+    headTitleEl.className = "sc-head-title";
+    headTitleEl.textContent = head.textContent;
+    var headCountEl = document.createElement("span");
+    headCountEl.className = "sc-count";
+    head.textContent = "";
+    head.appendChild(headTitleEl);
+    head.appendChild(headCountEl);
     var stage = $(".scenario-stage", root);
     var slides = [];
     data.scenes.forEach(function (sc) {
@@ -242,6 +251,7 @@
     }
 
     function end() {
+      headCountEl.textContent = "";
       stage.innerHTML =
         '<p class="sc-end">Szenario beendet.</p>' +
         '<div class="sc-nav"><button class="btn ghost restart">Von vorne beginnen</button></div>';
@@ -270,6 +280,8 @@
     // it isn't part of the conversation, so it shouldn't look like a reply.
     function render(i) {
       var s = slides[i];
+      headCountEl.textContent = (i + 1) + " von " + slides.length;
+
       var html = "";
       if (s.title) html += '<h3 class="sc-title">' + s.title + "</h3>";
       html += '<div class="sc-body sc-bubble sc-bubble-in">' + s.html + "</div>";
