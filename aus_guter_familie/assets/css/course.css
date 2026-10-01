@@ -370,6 +370,12 @@ img[data-zoom] { cursor: zoom-in; }
   gap: 10px 24px; align-items: start;
 }
 .match .hint { grid-column: 1 / -1; margin: 0 0 4px; }
+/* pool-right: sentence starts with their blanks on the left, the possible
+   endings on the right - reads in the order the sentence is completed. */
+.match.pool-right { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); }
+.match.pool-right .match-row { grid-template-columns: 1fr; gap: 9px; }
+.match.pool-right .match-rows { grid-column: 1; grid-row: 2; }
+.match.pool-right .match-pool { grid-column: 2; grid-row: 2; }
 .match-pool {
   display: flex; flex-direction: column; gap: 9px;
   min-height: 52px; padding: 11px;
@@ -749,6 +755,8 @@ a.card-l:hover { border-color: var(--accent); background: var(--tint); transform
 
 @media (max-width: 860px) {
   .match { grid-template-columns: 1fr; }
+  .match.pool-right { grid-template-columns: 1fr; }
+  .match.pool-right .match-rows, .match.pool-right .match-pool { grid-column: auto; grid-row: auto; }
 }
 
 @media (max-width: 700px) {
