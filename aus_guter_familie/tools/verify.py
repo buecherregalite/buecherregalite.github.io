@@ -15,6 +15,7 @@ SRC = ROOT / "research" / "course.json"
 
 HOST_FILE_LIMIT = 100 * 1024 * 1024     # GitHub hard limit per file
 HOST_SITE_LIMIT = 1024 * 1024 * 1024    # GitHub Pages published-site limit
+UNPUBLISHED = {"media-master", "research"}  # gitignored, kept locally only
 
 fails = []
 
@@ -37,7 +38,9 @@ def main():
     total_out = 0
     for p in pages:
         s = html[p]
-        total_out += s.count('<div class="block ') + s.count('class="gate"')
+        # gates marked data-added are editorial additions (CLEANUP.md §10)
+        total_out += (s.count('<div class="block ') + s.count('class="gate"')
+                      - s.count('class="gate" data-added'))
     check(len(pages) == len(course["lessons"]),
           f"{len(pages)} pages == {len(course['lessons'])} lessons")
     check(total_out == total_src,
@@ -88,7 +91,8 @@ def main():
         print(f"       {sz/1048576:.0f} MB  {n}")
 
     site = sum(f.stat().st_size for f in OUT.rglob("*")
-               if f.is_file() and not f.name.endswith(".part.mp4"))
+               if f.is_file() and not f.name.endswith(".part.mp4")
+               and UNPUBLISHED.isdisjoint(f.relative_to(OUT).parts))
     check(site < HOST_SITE_LIMIT,
           f"published site {site/1048576:.0f} MB < {HOST_SITE_LIMIT//1048576} MB limit")
 
