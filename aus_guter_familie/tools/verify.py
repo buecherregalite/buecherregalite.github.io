@@ -38,9 +38,10 @@ def main():
     total_out = 0
     for p in pages:
         s = html[p]
-        # gates marked data-added are editorial additions (CLEANUP.md §10)
+        # gates marked data-added are editorial additions; removed blocks are
+        # kept as a comment so they still count (CLEANUP.md §10)
         total_out += (s.count('<div class="block ') + s.count('class="gate"')
-                      - s.count('class="gate" data-added'))
+                      - s.count('class="gate" data-added') + s.count('<!-- block removed:'))
     check(len(pages) == len(course["lessons"]),
           f"{len(pages)} pages == {len(course['lessons'])} lessons")
     check(total_out == total_src,

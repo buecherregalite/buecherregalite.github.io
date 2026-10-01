@@ -197,5 +197,13 @@ That folder is the real archive and is not part of the published site.
   inside them keep «…». Straight quotes ("…", '…'), angle brackets (<…>) and
   German-style »…« used as quotation marks were replaced; apostrophes (geht's,
   Holz') stay. The chapter title «Psychiatrie» lost its quotation marks.
+- **One reading journal for both editions.** The two journal PDFs (Mellmann
+  and Reclam Klassikerinnen) were replaced by a single `Lesejournal.pdf` with
+  page references to the Mellmann edition (2006) and the Reclam edition (2025),
+  `(AgF, S. 67 / 72)`. The second download block is kept as a
+  `<!-- block removed: … -->` comment, which `verify.py` counts as a block.
+- **Page references give both editions** throughout the course, Mellmann first,
+  Reclam after the slash; chapter titles name the novel's parts and chapters
+  instead of page ranges.
 - Author's private email removed from the shipped JSON (`profile` key). The
   contact address published *in* the course content is retained.
