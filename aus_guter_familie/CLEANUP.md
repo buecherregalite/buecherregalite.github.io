@@ -187,9 +187,15 @@ That folder is the real archive and is not part of the published site.
 - **Matching and sorting** use drag-and-drop as in the original, and *also*
   accept tap-a-chip-then-tap-a-row, since HTML5 drag-and-drop does not work on
   touch devices.
-- **Link from «Psychiatrie» to «Berufsbild Herausgeber:in»** — an extra
+- **Link from Psychiatrie to «Berufsbild Herausgeber:in»** — an extra
   chapter-end button (`<div class="gate" data-added>`); `verify.py` leaves
   `data-added` gates out of the block count. That chapter was also renamed
   from «Berufsbild Herausgeberin».
+- **Quotation marks unified** to Swiss guillemets «…» (‹…› for a quotation
+  inside a non-italic quotation). Italic excerpts are marked as quotations by
+  the italics alone, so their outer «…» were dropped; direct speech and titles
+  inside them keep «…». Straight quotes ("…", '…'), angle brackets (<…>) and
+  German-style »…« used as quotation marks were replaced; apostrophes (geht's,
+  Holz') stay. The chapter title «Psychiatrie» lost its quotation marks.
 - Author's private email removed from the shipped JSON (`profile` key). The
   contact address published *in* the course content is retained.
